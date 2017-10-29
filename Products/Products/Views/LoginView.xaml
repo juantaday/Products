@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Products.Views.LoginView"
+    BindingContext="{Binding Main,Source={StaticResource Locator}}}"
+    Title="Login">
+    
+    <ContentPage.Content>
+        <StackLayout
+            BackgroundColor="LightCoral" 
+            BindingContext="{Binding Login} "
+            Padding="8"
+            Spacing="5">
+            <Label
+                TextColor="Black" 
+                FontAttributes="Bold"
+                FontSize="Large"
+                HorizontalOptions="Center"
+                Text="Products"></Label>
+            <Grid Margin="50,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <Label
+                    TextColor="Black" 
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Text="Email:">
+                </Label>
+                <Entry
+                      TextColor="Black" 
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Keyboard="Email"
+                    Placeholder="Enter your email..."
+                    Text="{Binding Email,Mode=TwoWay}">
+                </Entry>
+                <Label
+                    TextColor="Black" 
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    Text="Password:">
+                </Label>
+                <Entry
+                    TextColor="Black" 
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    IsPassword ="True"
+                    Placeholder="Enter your password..."
+                    Text="{Binding Password,Mode=TwoWay}">
+                </Entry>
+            </Grid>
+            <StackLayout Margin="50,0"
+                Orientation ="Horizontal">
+                <Label
+                    Text="Rememberme"
+                    VerticalOptions="Center" >
+                </Label>
+                <Switch
+                    IsToggled="{Binding IsToggled, Mode=TwoWay}"
+                    ></Switch>
+            </StackLayout>
+            <Label Margin="50,0"
+                Text="Forgot your password?"
+                TextColor="Blue">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding RecoverPassworCommad, Mode=TwoWay}"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <ActivityIndicator
+                Color="White"
+                IsRunning="{Binding IsRunning, Mode=TwoWay}"
+                >
+            </ActivityIndicator>
+            <StackLayout Margin="50,0">
+                <Button
+                Command="{Binding  LoginCommand}"
+                IsEnabled="{Binding IsEnabled, Mode=TwoWay}"
+                BackgroundColor="DodgerBlue"
+                Text="Login"
+                TextColor ="White"
+                BorderRadius="23"
+                HeightRequest="45"
+                >
+                </Button>
+                <Button
+                Command="{Binding  RegisterNewUserLoginCommand}"
+                IsEnabled="{Binding IsEnabled, Mode=TwoWay}"
+                BackgroundColor="Purple"
+                Text="Regidster New User.."
+                TextColor ="White"
+                BorderRadius="23"
+                HeightRequest="45"
+                  >
+                </Button>
+                <Button
+                Command="{Binding  RegisterNewUserLoginCommand}"
+                IsEnabled="{Binding IsEnabled, Mode=TwoWay}"
+                BackgroundColor="Blue"
+                Text="Login With Faceboock."
+                TextColor ="White"
+                BorderRadius="23"
+                HeightRequest="45"
+                >
+                </Button>
+            </StackLayout>
+           
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
