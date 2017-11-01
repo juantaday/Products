@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Products.ViewModels
+﻿namespace Products.ViewModels
 {
-   public class MainViewModel
+    using Models;
+    public class MainViewModel
     {
         #region Properties
         public LoginViewModel Login { get; set; }
+        public CategoriesViewModel Categories { get; set; }
+
+        public TokenResponse  Token { get; set; }
+
         #endregion
 
         #region constructor
@@ -17,6 +16,22 @@ namespace Products.ViewModels
         {
             Login = new LoginViewModel();
         }
+        #endregion
+
+        #region Singleton
+        static MainViewModel instance;
+        public static  MainViewModel GetInstance()
+            {
+                if (instance == null)
+                {
+                    return new MainViewModel();
+                }
+                else
+                {
+                    return instance;
+                }
+            }
+
         #endregion
     }
 }
