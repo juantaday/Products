@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Runtime.Serialization;
     public class Category
     {
         [Key]
@@ -14,7 +15,7 @@
         [Index("Category_Description_Index",IsUnique =true)]
         public string  Description { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual ICollection<Product> Products { get; set; }
     }
 }

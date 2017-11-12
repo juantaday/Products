@@ -5,8 +5,8 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Web;
-
-    public class Product
+    using System.Runtime.Serialization;
+   public class Product
     {
         [Key]
         public int ProductId { get; set; }
@@ -40,7 +40,7 @@
         [DataType(DataType.MultilineText)]
         public string  Reamarks { get; set; }
 
-        [JsonIgnore]
+       // [JsonIgnore]
         public virtual  Category Category { get; set; }
 
     }

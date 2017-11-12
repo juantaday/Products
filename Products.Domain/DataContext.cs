@@ -6,6 +6,9 @@
 
         public DataContext():base ("DefaultConnection")
         {
+           //this.Configuration.LazyLoadingEnabled = false;
+           //this.Configuration.ProxyCreationEnabled = false;
+           //TODO 29 20.25
         }
         public DbSet<Category> Categories { get; set; }
 

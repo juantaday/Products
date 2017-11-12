@@ -155,7 +155,7 @@
                     "The service is not available, please try latter");
                 return;
             }
-            if  (string.IsNullOrEmpty ( response.AccessToken ))
+            if  (string.IsNullOrEmpty (response.AccessToken))
             {
                 IsRunning = false;
                 IsEnabled = true;
@@ -180,6 +180,9 @@
         {
             IsEnabled = true;
             IsToggled = true;
+
+            Email = "juantadaymalan3@gmail.com";
+            Password = "juan123.";
 
             dialogService = new DialogService();
             apiService = new ApiService();

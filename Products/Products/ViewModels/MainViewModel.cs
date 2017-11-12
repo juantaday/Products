@@ -6,7 +6,8 @@
         #region Properties
         public LoginViewModel Login { get; set; }
         public CategoriesViewModel Categories { get; set; }
-
+        public ProductsViewModel Productsview { get; set; }
+        // 31 7.37
         public TokenResponse  Token { get; set; }
 
         #endregion
@@ -14,24 +15,28 @@
         #region constructor
         public MainViewModel()
         {
-            Login = new LoginViewModel();
-        }
+            instance = this;
+
+            if (Login ==null)
+            {
+                Login = new LoginViewModel();
+            }
+
+          }
         #endregion
 
         #region Singleton
-        static MainViewModel instance;
-        public static  MainViewModel GetInstance()
+        private static MainViewModel instance;
+
+        public static MainViewModel GetInstance()
+        {
+            if (instance == null)
             {
-                if (instance == null)
-                {
-                    return new MainViewModel();
-                }
-                else
-                {
-                    return instance;
-                }
+                instance = new MainViewModel();
             }
 
+            return instance;
+        }
         #endregion
     }
 }
