@@ -143,7 +143,7 @@
             }
 
             var response = await apiService.GetToken(
-                "http://soccerapi.somee.com/", 
+                "http://192.168.0.100/ProductsApi/", 
                 Email,
                 Password);
             if (response==null)
