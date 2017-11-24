@@ -29,7 +29,8 @@
         {
             var mainViewmodel = MainViewModel.GetInstance();
             mainViewmodel.Productsview = new ProductsViewModel(Products);
-            await Application.Current.MainPage.Navigation.PushAsync(new ProductsView());
+            mainViewmodel.Productsview.CategoryName = Description;
+           await Application.Current.MainPage.Navigation.PushAsync(new ProductsView());
         }
         #endregion
     }

@@ -8,8 +8,14 @@
     <ContentPage.Content>
         <StackLayout 
             Padding="5"
+            HorizontalOptions="CenterAndExpand"
             BindingContext="{Binding Productsview}"
             >
+            <Label
+                FontSize="Large"
+                FontAttributes="Bold"
+                Text="{Binding CategoryName}">
+            </Label>
             <ListView 
                 HasUnevenRows="True"
                 ItemsSource="{Binding Products}">

@@ -51,17 +51,7 @@
         #region Methods
         private async void LoadCategories()
         {
-            Categories.Clear();
-
-            var connection = await apiService.CheckConnection();
-
-            if (!connection.IsSuccess)
-            {
-                await dialogService.ShowMessage(
-                    "Error",
-                    connection.Message);
-                return; 
-            }
+        
             var mainViewModel = MainViewModel.GetInstance();
 
             if (mainViewModel.Token==null)
@@ -71,8 +61,8 @@
             }
 
             var response = await apiService.GetList<Category>(
-                "http://soccerapi.somee.com",
-                "/Api",
+                "http://192.168.0.100",
+                "/ProductsApi/Api",
                "/Categories",
                 mainViewModel.Token.TokenType,
                 mainViewModel.Token.AccessToken);

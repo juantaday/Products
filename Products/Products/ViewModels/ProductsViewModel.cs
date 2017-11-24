@@ -14,6 +14,9 @@ namespace Products.ViewModels
         #region Atributes
         ObservableCollection<Product> _products;
         #endregion
+        #region Properties
+
+        #endregion
         public ObservableCollection<Product> Products
         {
             get
@@ -32,10 +35,16 @@ namespace Products.ViewModels
             }
         }
 
+        public string CategoryName { get; set; }
+
+        #region Constructor
+
         public ProductsViewModel(List<Product> products)
         {
-           Products = new ObservableCollection<Product>(products.OrderBy(p=>p.Description ));
+            Products = new ObservableCollection<Product>(products.OrderBy(p => p.Description));
         }
+
+        #endregion
         #region Events
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion

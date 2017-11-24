@@ -4,7 +4,7 @@
              x:Class="Products.Views.NewCategoryView"
              BindingContext="{Binding Main,Source={StaticResource Locator}}}"
     Title="New Category">
-    
+
     <ContentPage.Content>
         <StackLayout BindingContext="{Binding NewCategory}" Padding="10">
             <Label Text="Category:" />

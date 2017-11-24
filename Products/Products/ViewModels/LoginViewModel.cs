@@ -168,8 +168,10 @@
             var mainViewModel = MainViewModel.GetInstance();
             mainViewModel.Token = response;
             mainViewModel.Categories = new CategoriesViewModel();
-            await Application.Current.MainPage.Navigation.PushAsync(new CategoriesView());
 
+            navigationService = new NavigationService();
+            await  navigationService.Navigate("CategoriesView");
+          
             IsRunning = false;
             IsEnabled = true;
         }
@@ -193,6 +195,7 @@
         #region Services 
         DialogService dialogService;
         ApiService apiService;
+        NavigationService navigationService;
         #endregion
 
     }
