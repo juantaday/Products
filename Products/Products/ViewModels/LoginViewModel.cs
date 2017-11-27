@@ -171,7 +171,7 @@
 
             navigationService = new NavigationService();
             await  navigationService.Navigate("CategoriesView");
-          
+            mainViewModel.Categories.Refresh();
             IsRunning = false;
             IsEnabled = true;
         }

@@ -41,8 +41,11 @@ namespace Products.ViewModels
 
         public ProductsViewModel(List<Product> products)
         {
-            Products = new ObservableCollection<Product>(products.OrderBy(p => p.Description));
-        }
+            if (products != null && products.Count >0)
+            {
+                Products = new ObservableCollection<Product>(products.OrderBy(p => p.Description));
+            }
+         }
 
         #endregion
         #region Events

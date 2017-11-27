@@ -58,12 +58,13 @@
             {
                 return NotFound();
             }
-
             return Ok(category);
         }
 
         // PUT: api/Categories/5
-        [ResponseType(typeof(void))]
+        //[Route ("api/PutCategories")]
+        //[ResponseType(typeof(Category))]
+        [AcceptVerbs("PUT")]
         public async Task<IHttpActionResult> PutCategory(int id, Category category)
         {
             if (!ModelState.IsValid)
@@ -80,7 +81,8 @@
 
             try
             {
-                await db.SaveChangesAsync();
+               await  db.SaveChangesAsync();
+                return Ok();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -93,8 +95,6 @@
                     throw;
                 }
             }
-
-            return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST: api/Categories

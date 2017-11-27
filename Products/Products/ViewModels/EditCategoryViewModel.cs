@@ -6,11 +6,29 @@
     using System.ComponentModel;
     using System.Windows.Input;
     using Models;
-    public class NewCategoryViewModel : INotifyPropertyChanged
+    public class EditCategoryViewModel:INotifyPropertyChanged
     {
         #region Attributes
+        Category category;
         bool _isRunning;
         bool _isEnabled;
+        #endregion
+
+
+        #region Constructor
+        public EditCategoryViewModel(Category category)
+        {
+            IsEnabled = true;
+
+            this.category = category;
+
+            navigationService = new NavigationService();
+            dialogService = new DialogService();
+            apiService = new ApiService();
+
+            Description = category.Description;
+        }
+
         #endregion
 
         #region Events
@@ -51,7 +69,7 @@
             }
         }
 
-        public string  Description { get; set; }
+        public string Description { get; set; }
 
         #endregion
 
@@ -77,22 +95,27 @@
                     return;
                 }
 
+                if (Description == this.category.Description)
+                {
+                   await  navigationService.Back();
+                   return;
+                }
+
                 IsRunning = true;
                 IsEnabled = false;
 
-                var category = new Category();
+                
 
-                category.Description = Description;
-
+                this.category.Description  = this.Description;
                 var mainviewmodel = MainViewModel.GetInstance();
 
-                var response = await apiService.Post(
+                var response = await apiService.Put(
                     "http://192.168.0.100",
                     "/productsApi/api",
                     "/Categories",
                     mainviewmodel.Token.TokenType,
                     mainviewmodel.Token.AccessToken,
-                    category);
+                    this.category);
                 if (!response.IsSuccess)
                 {
                     IsRunning = false;
@@ -105,38 +128,23 @@
 
                 IsRunning = false;
                 IsEnabled = true;
-
-                category = (Category)response.Result;
-
-                var categoriesViewModel = CategoriesViewModel.GetInstance();
-                categoriesViewModel.AddCategory(category);
                 await navigationService.Back();
+                MainViewModel.GetInstance().Categories.UpdateCategory(category);
 
             }
             catch (Exception ex)
             {
-               await  dialogService.ShowMessage ("Error",ex.Message );
+                await dialogService.ShowMessage("Error", ex.Message);
             }
         }
         #endregion
 
-        #region Constructor
-        public NewCategoryViewModel()
-        {
-            IsEnabled = true;
-
-            navigationService = new NavigationService();
-            dialogService = new DialogService();
-            apiService = new ApiService();
-
-        }
-
-        #endregion
-
+      
         #region Services 
         DialogService dialogService;
         ApiService apiService;
         NavigationService navigationService;
         #endregion
+
     }
 }
