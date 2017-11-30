@@ -4,12 +4,18 @@
              x:Class="Products.Views.ProductsView"
               BindingContext="{Binding Main,Source={StaticResource Locator}}}"
          Title="Products">
-
-    <ContentPage.Content>
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem 
+            Command="{Binding NewProductCommand}"
+            Icon="ic_add_circle_outline"/>
+    </ContentPage.ToolbarItems>
+   
+     <ContentPage.Content>
         <StackLayout 
             Padding="5"
             HorizontalOptions="CenterAndExpand"
-            BindingContext="{Binding Productsview}"
+            BindingContext="{Binding ProductsView}"
             >
             <Label
                 FontSize="Large"
@@ -26,8 +32,11 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <Image
+                                    WidthRequest="100"
+                                    HeightRequest="100"
                                     Grid.Column="0"
                                     HorizontalOptions="Start"
                                     Source="{Binding ImageFullPath}"
@@ -39,7 +48,16 @@
                                     VerticalOptions="Center"
                                     TextColor="Black"
                                     Text="{Binding Description}"/>
-                                
+
+                                <Image
+                                    Grid.Column="2"
+                                    HorizontalOptions="End"
+                                     Source="ic_chevron_right"
+                                    >
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SelectProductCommand}"/>
+                                    </Image.GestureRecognizers>
+                                </Image>
                             </Grid>
                         </ViewCell>
                     </DataTemplate>

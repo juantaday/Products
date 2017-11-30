@@ -26,7 +26,7 @@
         public ICommand SelectCategoryCommand {
             get
             {
-                return new RelayCommand(CategoryCommand);
+                return new RelayCommand(SelectCategory);
             }
         }
 
@@ -120,14 +120,13 @@
             }
         }
 
-        private async  void CategoryCommand()
+        private async  void SelectCategory()
         {
             try
             {
                 var mainViewmodel = MainViewModel.GetInstance();
-                mainViewmodel.Productsview = new ProductsViewModel(Products);
-                mainViewmodel.Productsview.CategoryName = Description;
-
+                mainViewmodel.ProductsView = new ProductsViewModel(Products, Description);
+               
                 if (navigationService == null)
                 {
                     navigationService = new NavigationService();

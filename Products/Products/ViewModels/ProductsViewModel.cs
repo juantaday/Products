@@ -39,8 +39,10 @@ namespace Products.ViewModels
 
         #region Constructor
 
-        public ProductsViewModel(List<Product> products)
+        public ProductsViewModel(List<Product> products, string categoryName)
         {
+
+            this.CategoryName = categoryName;
             if (products != null && products.Count >0)
             {
                 Products = new ObservableCollection<Product>(products.OrderBy(p => p.Description));

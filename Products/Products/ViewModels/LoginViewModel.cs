@@ -133,26 +133,26 @@
             }
             IsRunning = true;
             IsEnabled = false;
-            var connection = await apiService.CheckConnection();
-            if (!connection.IsSuccess )
-            {
-                IsRunning = false ;
-                IsEnabled = true ;
-                await dialogService.ShowMessage("Error", connection.Message);
-                return;
-            }
+            //var connection = await apiService.CheckConnection();
+            //if (!connection.IsSuccess )
+            //{
+            //    IsRunning = false ;
+            //    IsEnabled = true ;
+            //    await dialogService.ShowMessage("Error", connection.Message);
+            //    return;
+            //}
 
             var response = await apiService.GetToken(
                 "http://192.168.0.100/ProductsApi/", 
                 Email,
                 Password);
-            if (response==null)
+            if (response==null || response.AccessToken==null)
             {
                 IsRunning = false;
                 IsEnabled = true;
                 await dialogService.ShowMessage(
-                    "Error", 
-                    "The service is not available, please try latter");
+                    "Error",
+                    response.ErrorDescription);
                 return;
             }
             if  (string.IsNullOrEmpty (response.AccessToken))

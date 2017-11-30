@@ -10,11 +10,13 @@
         #region Properties
         public LoginViewModel Login { get; set; }
         public CategoriesViewModel Categories { get; set; }
-        public ProductsViewModel Productsview { get; set; }
+        public ProductsViewModel ProductsView { get; set; }
 
         public NewCategoryViewModel NewCategory { get; set; }
 
         public EditCategoryViewModel EditCategory { get; set; }
+
+        public EditAndNewPorductViewModel EditAndNewPorduct { get; set; }
 
         // 31 7.37
         public TokenResponse Token { get; set; }
@@ -57,6 +59,23 @@
             {
                 return new RelayCommand(NewCategoryCmd);
             }
+        }
+
+
+        public ICommand NewProductCommand
+        {
+            get { 
+                return new RelayCommand(NewProductCmd);
+            }
+        }
+
+
+        private async void NewProductCmd()
+        {
+            var nameCantegory = MainViewModel.GetInstance ();
+           nameCantegory.EditAndNewPorduct = new EditAndNewPorductViewModel(new Product(),nameCantegory.ProductsView.CategoryName,Operatio.INSERT);
+
+            await navigationService.Navigate("EditAndNewPorductView");
         }
 
         private async  void NewCategoryCmd()

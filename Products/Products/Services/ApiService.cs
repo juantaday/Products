@@ -81,9 +81,19 @@
                     "grant_type=password&username={0}&password={1}",
                     username, password),
                     Encoding.UTF8, "application/x-www-form-urlencoded"));
-                var resultJSON = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<TokenResponse>(resultJSON);
-                return result;
+                var result = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var resonseError = new TokenResponse();
+                    resonseError.ErrorDescription = result;
+                    return resonseError;
+                }
+
+
+
+               return JsonConvert.DeserializeObject<TokenResponse>(result);
+     
             }
             catch
             {
@@ -261,8 +271,12 @@
         }
 
         public async Task<Response> Post<T>(
-            string urlBase, string servicePrefix, string controller,
-            string tokenType, string accessToken, T model)
+            string urlBase, 
+            string servicePrefix, 
+            string controller,
+            string tokenType,
+            string accessToken,
+            T model)
         {
             try
             {
@@ -273,17 +287,16 @@
                 client.BaseAddress = new Uri(urlBase);
                 var url = string.Format("{0}{1}", servicePrefix, controller);
                 var response = await client.PostAsync(url, content);
+                var result = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return new Response
-                    {
-                        IsSuccess = false,
-                        Message = response.StatusCode.ToString(),
-                    };
+                    var error = JsonConvert.DeserializeObject<Response>(result);
+                    error.IsSuccess = false;
+                    return error;
                 }
 
-                var result = await response.Content.ReadAsStringAsync();
+               
                 var newRecord = JsonConvert.DeserializeObject<T>(result);
 
                 return new Response
@@ -402,9 +415,22 @@
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    var error = JsonConvert.DeserializeObject<Response>(result);
-                    error.IsSuccess = false;
-                    return error;
+                    if (result == null || string.IsNullOrEmpty (result) || result=="")
+                    {
+                        return new Response
+                        {
+                            IsSuccess = false,
+                            Message = response.ReasonPhrase.ToString(),
+                        };
+                        
+                    }
+                    else
+                    {
+                        var error = JsonConvert.DeserializeObject<Response>(result);
+                        error.IsSuccess = false;
+                        return error;
+                    }
+                    
                 }
 
                 return new Response
