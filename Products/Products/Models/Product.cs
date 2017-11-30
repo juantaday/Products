@@ -42,6 +42,7 @@
         }
 
         #endregion
+        #region Commads
 
         public ICommand SelectProductCommand
         {
@@ -54,17 +55,25 @@
         private async void SelectProduct()
         {
             var nameCantegory = MainViewModel.GetInstance();
-            nameCantegory.EditAndNewPorduct = new EditAndNewPorductViewModel(this,nameCantegory.ProductsView.CategoryName, Operatio.UPDATE);
+            nameCantegory.EditAndNewPorduct = new EditAndNewPorductViewModel(this, nameCantegory.ProductsView.CategoryName, Operatio.UPDATE);
 
-            if (navigationService==null)
+            if (navigationService == null)
             {
                 navigationService = new NavigationService();
             }
             await navigationService.Navigate("EditAndNewPorductView");
         }
 
+        #endregion
         #region Services
         NavigationService navigationService;
+        #endregion
+
+        #region Overrides
+        public override int GetHashCode()
+        {
+            return ProductId;
+        } 
         #endregion
     }
 }

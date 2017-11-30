@@ -40,7 +40,7 @@
         [DataType(DataType.MultilineText)]
         public string  Reamarks { get; set; }
 
-       // [JsonIgnore]
+        [JsonIgnore]
         public virtual  Category Category { get; set; }
 
     }

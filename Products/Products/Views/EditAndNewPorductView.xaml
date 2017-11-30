@@ -6,7 +6,7 @@
          Title="{Binding EditAndNewPorduct.CategoryName}">
     
     <ContentPage.Content>
-        <ScrollView>
+        <ScrollView Padding="0">
         <StackLayout 
             Padding="0"
             Spacing="5"

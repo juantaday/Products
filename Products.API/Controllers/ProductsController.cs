@@ -50,6 +50,7 @@
             try
             {
                 await db.SaveChangesAsync();
+                return Ok();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -62,8 +63,6 @@
                     throw;
                 }
             }
-
-            return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST: api/Products

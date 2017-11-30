@@ -359,8 +359,12 @@
         }
 
         public async Task<Response> Put<T>(
-            string urlBase, string servicePrefix, string controller,
-            string tokenType, string accessToken, T model)
+            string urlBase,
+            string servicePrefix,
+            string controller,
+            string tokenType, 
+            string accessToken, 
+            T model)
         {
             try
             {

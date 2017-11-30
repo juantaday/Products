@@ -15,8 +15,6 @@ namespace Products.ViewModels
         ObservableCollection<Product> _products;
         #endregion
         #region Properties
-
-        #endregion
         public ObservableCollection<Product> Products
         {
             get
@@ -25,7 +23,7 @@ namespace Products.ViewModels
             }
             set
             {
-                if (_products!=value)
+                if (_products != value)
                 {
                     _products = value;
                     PropertyChanged?.Invoke(
@@ -37,12 +35,21 @@ namespace Products.ViewModels
 
         public string CategoryName { get; set; }
 
+        #endregion
+
+
         #region Constructor
 
-        public ProductsViewModel(List<Product> products, string categoryName)
+        public ProductsViewModel(int categoryId, List<Product> products, string categoryName)
         {
-
             this.CategoryName = categoryName;
+
+
+            foreach (var product in products)
+            {
+                product.CategoryId = categoryId;
+            }
+          
             if (products != null && products.Count >0)
             {
                 Products = new ObservableCollection<Product>(products.OrderBy(p => p.Description));

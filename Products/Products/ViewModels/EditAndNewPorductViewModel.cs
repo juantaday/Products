@@ -16,7 +16,8 @@ namespace Products.ViewModels
     {
         #region Atributes
         Operatio  Operation;
-
+        bool _isRunning;
+        bool _isEnabled;
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion
 
@@ -26,6 +27,40 @@ namespace Products.ViewModels
         public string TitleOperation { get; set; }
 
         public string TextButton { get; set; }
+
+        public bool IsRunning
+        {
+            get
+            {
+                return _isRunning;
+            }
+            set
+            {
+                if (value != _isRunning)
+                {
+                    _isRunning = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsRunning)));
+                }
+            }
+        }
+
+        public bool IsEnabled
+        {
+            get
+            {
+                return _isEnabled;
+            }
+            set
+            {
+                if (value != _isEnabled)
+                {
+                    _isEnabled = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsEnabled)));
+                }
+            }
+        }
+
+
 
         #endregion
 
@@ -46,9 +81,12 @@ namespace Products.ViewModels
             //initialize Services
             apiService = new ApiService();
             dialogService = new DialogService();
+            navigationService = new NavigationService();
 
             this.Operation = opration;
             this.CategoryName = string.Format("Category:{0}", CategoryName);
+            IsEnabled = true;
+
             switch (Operation)
             {
                 case Operatio.INSERT:
@@ -83,26 +121,8 @@ namespace Products.ViewModels
 
             if (this.Operation ==Operatio.UPDATE)
             {
-
-                var response = await apiService.Post<Product>(
-               "http://192.168.0.100",
-               "/ProductsApi/Api",
-              "/Products",
-               mainViewModel.Token.TokenType,
-               mainViewModel.Token.AccessToken,
-               this);
-
-                if (!response.IsSuccess)
-                {
-                    await dialogService.ShowMessage(
-                       "Error",
-                       response.Message);
-                    return;
-                }
-            }
-            else if (this.Operation == Operatio.INSERT)
-            {
-
+                IsRunning = true;
+                IsEnabled = false;
                 var response = await apiService.Put<Product>(
                "http://192.168.0.100",
                "/ProductsApi/Api",
@@ -113,11 +133,41 @@ namespace Products.ViewModels
 
                 if (!response.IsSuccess)
                 {
+                    IsRunning = false;
+                    IsEnabled = true;
                     await dialogService.ShowMessage(
                        "Error",
                        response.Message);
                     return;
                 }
+                IsRunning = false;
+                IsEnabled = true;
+                await  navigationService.Back();
+            }
+            else if (this.Operation == Operatio.INSERT)
+            {
+                IsEnabled = false;
+                IsRunning = true;
+                var response = await apiService.Post<Product>(
+               "http://192.168.0.100",
+               "/ProductsApi/Api",
+              "/Products",
+               mainViewModel.Token.TokenType,
+               mainViewModel.Token.AccessToken,
+               this);
+
+                if (!response.IsSuccess)
+                {
+                    IsRunning = false;
+                    IsEnabled = true;
+                    await dialogService.ShowMessage(
+                       "Error",
+                       response.Message);
+                    return;
+                }
+                IsRunning = false;
+                IsEnabled = true;
+                await   navigationService.Back();
             }
         }
         #endregion
@@ -125,6 +175,7 @@ namespace Products.ViewModels
         #region Services
         ApiService apiService;
         DialogService dialogService;
+        NavigationService navigationService;
         #endregion
     }
 

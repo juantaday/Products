@@ -125,7 +125,8 @@
             try
             {
                 var mainViewmodel = MainViewModel.GetInstance();
-                mainViewmodel.ProductsView = new ProductsViewModel(Products, Description);
+                      
+                mainViewmodel.ProductsView = new ProductsViewModel(CategoryId,Products, Description);
                
                 if (navigationService == null)
                 {
