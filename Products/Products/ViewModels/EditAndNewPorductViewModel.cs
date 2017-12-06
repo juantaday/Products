@@ -1,24 +1,24 @@
-﻿using GalaSoft.MvvmLight.Command;
-using Products.Models;
-using Products.Services;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿
 
 namespace Products.ViewModels
 {
+    using GalaSoft.MvvmLight.Command;
+    using Plugin.Media;
+    using Plugin.Media.Abstractions;
+    using Products.Models;
+    using Products.Services;
+    using System.ComponentModel;
+    using System.Windows.Input;
+    using Xamarin.Forms;
+    using Helpers;
     public class EditAndNewPorductViewModel:Product,INotifyPropertyChanged
     {
         #region Atributes
         Operatio  Operation;
         bool _isRunning;
         bool _isEnabled;
-        public event PropertyChangedEventHandler PropertyChanged;
+        ImageSource _imageSource;
+        MediaFile _file;
         #endregion
 
         #region Properties
@@ -60,21 +60,45 @@ namespace Products.ViewModels
             }
         }
 
+        public ImageSource ImageSource
+        {
+            get
+            {
+                return _imageSource;
+            }
 
+            set {
+                if (value!=_imageSource)
+                {
+                    _imageSource = value;
+                    PropertyChanged?.Invoke(
+                        this,
+                        new PropertyChangedEventArgs(nameof(ImageSource)));
+                }
+            }
+
+        }
 
         #endregion
 
         #region Constuctor
         public EditAndNewPorductViewModel(Product product, string CategoryName, Operatio opration)
         {
-
+            if (product.ImageFullPath != null )
+            {
+                ImageSource = product.ImageFullPath;
+            }
+            else
+            {
+                ImageSource = "ic_do_not_disturb_alt";
+            }
             CategoryId = product.CategoryId;
             ProductId = product.ProductId;
             Description = product.Description;
             Price = product.Price;
             IsActive = product.IsActive;
             LastPorcharse = product.LastPorcharse;
-            Image = product.Image;
+          
             Stock = product.Stock;
             Reamarks = product.Reamarks;
 
@@ -107,6 +131,53 @@ namespace Products.ViewModels
         #endregion
 
         #region Commands
+
+        public ICommand ChangeImageCommand {
+            get
+            {
+                return new RelayCommand(ChangeImage);
+            }
+        }
+        private async  void ChangeImage()
+        {
+            await CrossMedia.Current.Initialize();
+            if (CrossMedia.Current.IsCameraAvailable &&
+                CrossMedia.Current.IsTakePhotoSupported)
+            {
+                var source = await  dialogService.ShowImageOptios();
+                if (source == null)
+                {
+                    _file = null;
+                    return;
+                }
+                else if (source == "From camera")
+                {
+                    var storeCameraMediaOptionsf = new  StoreCameraMediaOptions();
+                    storeCameraMediaOptionsf.Directory = "Sample";
+                    storeCameraMediaOptionsf.Name = "test.jpg";
+                    storeCameraMediaOptionsf.PhotoSize  = PhotoSize.Small;
+
+                    _file = await CrossMedia.Current.TakePhotoAsync(storeCameraMediaOptionsf);
+                       
+                }
+                else if (source == "From gallery")
+                {
+
+                    _file = await CrossMedia.Current.PickPhotoAsync();
+                }
+                if (_file!=null )
+                {
+                    ImageSource = ImageSource.FromStream(()=>
+                        {
+                            var stream = _file.GetStream();
+                            return stream;
+                        }
+                    );
+                }
+
+            }
+        }
+
         public ICommand SaveCommand
         {
             get
@@ -117,59 +188,96 @@ namespace Products.ViewModels
 
         private async  void SaveAndUpdate()
         {
-            var mainViewModel = MainViewModel.GetInstance();
+            byte [] imageArray  = null ;
 
-            if (this.Operation ==Operatio.UPDATE)
+            try
             {
-                IsRunning = true;
-                IsEnabled = false;
-                var response = await apiService.Put<Product>(
-               "http://192.168.0.100",
-               "/ProductsApi/Api",
-              "/Products",
-               mainViewModel.Token.TokenType,
-               mainViewModel.Token.AccessToken,
-               this);
 
-                if (!response.IsSuccess)
+                if (_file != null)
                 {
+                    imageArray = FilesHelper.ReadFully(_file.GetStream());
+                    _file.Dispose();
+                }
+                this.ImageArray = imageArray;
+                var mainViewModel = MainViewModel.GetInstance();
+
+                var newProduct = new Product
+                {
+                    CategoryId = this.CategoryId,
+                    Description = Description,
+                    ImageArray = ImageArray,
+                    IsActive = IsActive,
+                    LastPorcharse = LastPorcharse,
+                    Price = Price,
+                    ProductId = this.ProductId,
+                    Reamarks = this.Reamarks,
+                    Stock = Stock
+                };
+
+                if (this.Operation == Operatio.UPDATE)
+                {
+                    IsRunning = true;
+                    IsEnabled = false;
+                    var response = await apiService.Put<Product>(
+                   "http://192.168.0.100",
+                   "/ProductsApi/Api",
+                  "/Products",
+                   mainViewModel.Token.TokenType,
+                   mainViewModel.Token.AccessToken,
+                   newProduct);
+
+                    if (!response.IsSuccess)
+                    {
+                        IsRunning = false;
+                        IsEnabled = true;
+                        await dialogService.ShowMessage(
+                           "Error",
+                           response.Message);
+                        return;
+                    }
                     IsRunning = false;
                     IsEnabled = true;
-                    await dialogService.ShowMessage(
-                       "Error",
-                       response.Message);
-                    return;
+                    await navigationService.Back();
                 }
-                IsRunning = false;
-                IsEnabled = true;
-                await  navigationService.Back();
-            }
-            else if (this.Operation == Operatio.INSERT)
-            {
-                IsEnabled = false;
-                IsRunning = true;
-                var response = await apiService.Post<Product>(
-               "http://192.168.0.100",
-               "/ProductsApi/Api",
-              "/Products",
-               mainViewModel.Token.TokenType,
-               mainViewModel.Token.AccessToken,
-               this);
-
-                if (!response.IsSuccess)
+                else if (this.Operation == Operatio.INSERT)
                 {
+                    IsEnabled = false;
+                    IsRunning = true;
+                    var response = await apiService.Post<Product>(
+                   "http://192.168.0.100",
+                   "/ProductsApi/Api",
+                  "/Products",
+                   mainViewModel.Token.TokenType,
+                   mainViewModel.Token.AccessToken,
+                   newProduct);
+
+                    if (!response.IsSuccess)
+                    {
+                        IsRunning = false;
+                        IsEnabled = true;
+                        await dialogService.ShowMessage(
+                           "Error",
+                           response.Message);
+                        return;
+                    }
                     IsRunning = false;
                     IsEnabled = true;
-                    await dialogService.ShowMessage(
-                       "Error",
-                       response.Message);
-                    return;
+                    await navigationService.Back();
                 }
-                IsRunning = false;
-                IsEnabled = true;
-                await   navigationService.Back();
             }
+            catch (System.Exception ex)
+            {
+
+              await   dialogService.ShowMessage("Error",ex.Message );
+                return;
+            }
+
         }
+        #endregion
+
+        #region Events
+        public event PropertyChangedEventHandler PropertyChanged;
+
         #endregion
 
         #region Services

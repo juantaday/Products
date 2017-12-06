@@ -291,9 +291,10 @@
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    var error = JsonConvert.DeserializeObject<Response>(result);
-                    error.IsSuccess = false;
-                    return error;
+                    return  new Response {
+                        Message = result.ToString (),
+                        IsSuccess = false 
+                    };
                 }
 
                

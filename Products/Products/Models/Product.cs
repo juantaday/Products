@@ -24,13 +24,15 @@
         public double Stock { get; set; }
         public string Reamarks { get; set; }
 
+        public byte [] ImageArray { get; set; }
+
         public string ImageFullPath
         {
             get
             {
                 if (this.Image != null)
                 {
-                    return string.Format("http://soccerapi.somee.com/{0}",
+                    return string.Format("http://192.168.0.100/ProductsApi{0}",
                     this.Image.Substring(1));
                 }
                 else

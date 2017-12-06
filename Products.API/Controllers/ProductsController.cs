@@ -8,6 +8,10 @@
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.Http.Description;
+    using System.IO;
+    using System;
+    using Products.API.Helpers;
+
     public class ProductsController : ApiController
     {
         private DataContext db = new DataContext();
@@ -72,6 +76,20 @@
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            if (product.ImageArray!=null  && product.ImageArray.Length>0)
+            {
+                var stream = new  MemoryStream(product.ImageArray);
+                var guid = Guid.NewGuid().ToString();
+                var file = string.Format("{0}.png",guid);
+                var folder = string.Format("~/Content/Images/Products");
+                var fullPath = string.Format("{0}/{1}",folder,file );
+                var response = FilesHelper.UpLoadPhoto(stream,folder,file);
+                if (response)
+                {
+                    product.Image = fullPath;
+                }
             }
 
             db.Products.Add(product);

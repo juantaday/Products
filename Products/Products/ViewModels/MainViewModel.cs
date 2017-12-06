@@ -7,6 +7,10 @@
 
     public class MainViewModel
     {
+        #region Atributes
+        public int CategoryId { get; set; }
+        #endregion
+
         #region Properties
         public LoginViewModel Login { get; set; }
         public CategoriesViewModel Categories { get; set; }
@@ -72,8 +76,15 @@
 
         private async void NewProductCmd()
         {
-            var nameCantegory = MainViewModel.GetInstance ();
-           nameCantegory.EditAndNewPorduct = new EditAndNewPorductViewModel(new Product(),nameCantegory.ProductsView.CategoryName,Operatio.INSERT);
+            var nameCantegory = MainViewModel.GetInstance();
+            var product = new Product();
+            product.CategoryId = CategoryId;
+
+
+           nameCantegory.EditAndNewPorduct = new EditAndNewPorductViewModel(
+               product, 
+               nameCantegory.ProductsView.CategoryName,
+               Operatio.INSERT);
 
             await navigationService.Navigate("EditAndNewPorductView");
         }

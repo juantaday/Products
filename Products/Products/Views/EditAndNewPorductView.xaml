@@ -10,7 +10,6 @@
         <StackLayout 
             Padding="0"
             Spacing="5"
-            HorizontalOptions="CenterAndExpand"
             BindingContext="{Binding EditAndNewPorduct}">
             <Label 
                 TextColor="Black"
@@ -58,6 +57,15 @@
                 Color="Black"
                 IsRunning="{Binding IsRunning, Mode=TwoWay}"
                />
+                <Image
+                    HeightRequest="200"
+                    WidthRequest="200"
+                    
+                    Source="{Binding ImageSource, Mode=TwoWay}">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangeImageCommand}"/>
+                    </Image.GestureRecognizers>
+                  </Image>
             
             <Button
                 Margin="10,0"
