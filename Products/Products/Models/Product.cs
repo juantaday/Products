@@ -3,6 +3,9 @@
     using GalaSoft.MvvmLight.Command;
     using Products.Services;
     using Products.ViewModels;
+    using SQLite;
+    using SQLite.Net.Attributes;
+    using SQLiteNetExtensions.Attributes;
     using System;
     using System.Windows.Input;
 
@@ -14,8 +17,16 @@
         #endregion
         #region Properties
 
-        public int CategoryId { get; set; }
+        [PrimaryKey]
         public int ProductId { get; set; }
+
+        [ForeignKey(typeof(Category))]
+        public int CategoryId { get; set; }
+
+        [ManyToOne]
+        public Category Category { get; set; }
+
+
         public string Description { get; set; }
         public decimal Price { get; set; }
         public bool IsActive { get; set; }
@@ -63,7 +74,7 @@
             {
                 navigationService = new NavigationService();
             }
-            await navigationService.Navigate("EditAndNewPorductView");
+            await navigationService.NavigateOnMaster("EditAndNewPorductView");
         }
 
         #endregion

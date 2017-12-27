@@ -2,6 +2,9 @@
 {
     using GalaSoft.MvvmLight.Command;
     using Products.Services;
+    using SQLite;
+    using SQLite.Net.Attributes;
+    using SQLiteNetExtensions.Attributes;
     using System;
     using System.Collections.Generic;
     using System.Windows.Input;
@@ -17,8 +20,12 @@
         #endregion
 
         #region Properties
+
+        [PrimaryKey]
         public int CategoryId { get; set; }
         public string Description { get; set; }
+
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<Product> Products { get; set; }
         #endregion
 
@@ -53,7 +60,7 @@
                 {
                     navigationService = new NavigationService ();
                 }
-                  await  navigationService.Navigate("EditCategoryView");
+                  await  navigationService.NavigateOnMaster("EditCategoryView");
             }
             catch (Exception ex)
             {
@@ -132,7 +139,7 @@
                 {
                     navigationService = new NavigationService();
                 }
-                await navigationService.Navigate("ProductsView");
+                await navigationService.NavigateOnMaster("ProductsView");
             }
             catch (Exception ex)
             {

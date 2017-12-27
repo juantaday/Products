@@ -1,5 +1,6 @@
 ﻿namespace Products.Domain
 {
+    using Products.Domain.Models;
     using System.Data.Entity;
     public class DataContext:DbContext
     {
@@ -14,5 +15,8 @@
 
         public DbSet<Product> Products { get; set; }
 
+        public DbSet<Customer> Customers { get; set; }
+
+        public DbSet<Ubication> Ubications { get; set; }
     }
 }

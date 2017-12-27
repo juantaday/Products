@@ -11,12 +11,18 @@
             Command="{Binding NewCategoryCommand}"
             Icon="ic_add_circle_outline"/>
     </ContentPage.ToolbarItems>
-    
+
     <ContentPage.Content>
         <StackLayout 
-            Padding="5"
+            Padding="5,10"
             BindingContext="{Binding Categories}"
             >
+            <SearchBar
+                Placeholder="Search..."
+                Text="{Binding Filter, Mode=TwoWay}"
+                SearchCommand="{Binding SearchCommand}">
+            </SearchBar>
+
             <ListView 
                 HasUnevenRows="True"
                 IsRefreshing="{Binding IsRefreshing,Mode=TwoWay}"
@@ -24,9 +30,9 @@
                 IsPullToRefreshEnabled="True"
                 ItemsSource="{Binding Categories}">
                 <ListView.ItemTemplate>
-                    <DataTemplate>
+                      <DataTemplate >
                         <ViewCell>
-                            <ViewCell.ContextActions>
+                              <ViewCell.ContextActions>
                                 <MenuItem 
                                     Command="{Binding EditCommand}"
                                     Text="Edit"/>
@@ -35,7 +41,7 @@
                                     Command="{Binding DeleteCommand}"
                                     Text="Delete"/>
                             </ViewCell.ContextActions>
-                            
+
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>

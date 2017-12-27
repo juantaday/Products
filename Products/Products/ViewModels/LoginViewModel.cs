@@ -7,6 +7,9 @@
     using Services;
     using Xamarin.Forms;
     using Views;
+    using System.Threading.Tasks;
+    using Products.Models;
+
     public class LoginViewModel : INotifyPropertyChanged
     {
         #region Attributes
@@ -106,6 +109,20 @@
         #endregion
 
         #region Commands
+
+        public ICommand LoginWithFacebookCommand {
+            get
+            {
+                return new RelayCommand(LoginWithFacebook);
+
+            }
+        }
+
+        private async void LoginWithFacebook()
+        {
+            await navigationService.NavigateOnLogin("LoginFacebookView");
+        }
+
         public ICommand LoginCommand
         {
             get
@@ -113,9 +130,32 @@
                 return new RelayCommand(Login);
             }
 
-                }
+         }
 
-        private async  void Login()
+        public ICommand RegisterNewUserCommand
+        {
+            get
+            {
+                return new RelayCommand(RegisterNewUser);
+            }
+        }
+
+        private async  void RegisterNewUser()
+        {
+            try
+            {
+                MainViewModel.GetInstance().NewCustomer = new NewCustomerViewModel();
+                await navigationService.NavigateOnLogin("NewCustomerView");
+            }
+            catch (Exception ex)
+            {
+               await dialogService.ShowMessage("Error",ex.Message );
+            }
+
+           
+        }
+
+        private async  void  Login()
         {
             if (string.IsNullOrEmpty (Email))
             {
@@ -142,11 +182,21 @@
             //    return;
             //}
 
+            //Task<TokenResponse> getStringTask = apiService.GetToken(
+            //    "http://192.168.0.100",
+            //    Email,
+            //    Password);
+
             var response = await apiService.GetToken(
-                "http://192.168.0.100/ProductsApi/", 
+                "http://192.168.0.100/ProductsApi/",
                 Email,
                 Password);
-            if (response==null || response.AccessToken==null)
+
+            if (response==null)
+            {
+                return;
+            }
+            if (response.AccessToken == null)
             {
                 IsRunning = false;
                 IsEnabled = true;
@@ -155,7 +205,7 @@
                     response.ErrorDescription);
                 return;
             }
-            if  (string.IsNullOrEmpty (response.AccessToken))
+            if  (string.IsNullOrEmpty(response.AccessToken))
             {
                 IsRunning = false;
                 IsEnabled = true;
@@ -165,12 +215,19 @@
                 return;
             }
 
+            response.IsRemembered = IsToggled;
+            if (dataService == null )
+            {
+                dataService = new DataService();
+            }
+            dataService.DeleteAllAndInsert(response);
+
             var mainViewModel = MainViewModel.GetInstance();
             mainViewModel.Token = response;
             mainViewModel.Categories = new CategoriesViewModel();
 
             navigationService = new NavigationService();
-            await  navigationService.Navigate("CategoriesView");
+           navigationService.SetMainPage("MasterView");
             mainViewModel.Categories.Refresh();
             IsRunning = false;
             IsEnabled = true;
@@ -188,11 +245,14 @@
 
             dialogService = new DialogService();
             apiService = new ApiService();
+            navigationService = new NavigationService();
         }
 
         #endregion
 
+
         #region Services 
+        DataService dataService;
         DialogService dialogService;
         ApiService apiService;
         NavigationService navigationService;

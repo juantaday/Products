@@ -1,10 +1,8 @@
-﻿
-
-namespace Products.Backend.Controllers
+﻿namespace Products.Backend.Controllers
 {
     using Products.Backend.Helpers;
     using Products.Backend.Models;
-    using Products.Domain;
+    using Products.Domain.Models;
     using System.Data.Entity;
     using System.Net;
     using System.Threading.Tasks;

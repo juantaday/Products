@@ -1,7 +1,7 @@
 ﻿namespace Products.Backend.Controllers
 {
     using Products.Backend.Models;
-    using Products.Domain;
+    using Products.Domain.Models;
     using System;
     using System.Data.Entity;
     using System.Net;

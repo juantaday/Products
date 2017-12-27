@@ -1,9 +1,15 @@
 ﻿namespace Products.Models
 {
     using Newtonsoft.Json;
+    using SQLite;
+    using SQLite.Net.Attributes;
     using System;
     public class TokenResponse
     {
+        #region Properties
+        [PrimaryKey, AutoIncrement]
+        public int TokenResponseId { get; set; }
+
 
         [JsonProperty(PropertyName = "access_token")]
         public string AccessToken { get; set; }
@@ -24,6 +30,16 @@
         public DateTime Expires { get; set; }
 
         [JsonProperty(PropertyName = "error_description")]
-        public string  ErrorDescription { get; set; }
+        public string ErrorDescription { get; set; }
+
+        public bool IsRemembered { get; set; }
+        #endregion
+
+        #region Methods
+        public override int GetHashCode()
+        {
+            return TokenResponseId;
+        }
+        #endregion
     }
 }

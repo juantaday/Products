@@ -2,6 +2,7 @@
 {
     using Models;
     using Products.Domain;
+    using Products.Domain.Models;
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;

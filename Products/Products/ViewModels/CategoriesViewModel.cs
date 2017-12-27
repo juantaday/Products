@@ -7,12 +7,15 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Windows.Input;
 
     public class CategoriesViewModel :INotifyPropertyChanged
     {
         #region Atributes
         ObservableCollection<Category >_categories;
+        ObservableCollection<Category> categories;
+        string _filter;
         bool _IsRefreshing;
         #endregion
         #region Services
@@ -21,6 +24,29 @@
         #endregion
 
         #region Properties
+        public string Filter
+        {
+            get
+            {
+                return _filter;
+            }
+            set
+            {
+                if (_filter != value)
+                {
+                    _filter = value;
+                    PropertyChanged?.Invoke(
+                        this,
+                        new PropertyChangedEventArgs(nameof(Filter)));
+                     if(_filter==null || string.IsNullOrEmpty (_filter))
+                    {
+                        Categories = categories;
+                    }
+                }
+               
+            }
+        }
+
         public ObservableCollection<Category> Categories
         {
             get
@@ -51,6 +77,7 @@
                     _IsRefreshing = value;
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsRefreshing)));
                 }
+                
             }
         }
         #endregion
@@ -63,22 +90,48 @@
             apiService = new ApiService();
             dialogService = new DialogService();
             Categories = new ObservableCollection<Category>();
+            IsRefreshing = false;
          }
 
         #endregion
 
         #region Commands
+        public ICommand SearchCommand
+        {
+            get
+            {
+                return new RelayCommand(Search);
+            }
+        }
+
+        void Search()
+        {
+            IsRefreshing = true;
+            Categories = new ObservableCollection<Category>(categories
+                .Where(c => c.Description.ToLower().Contains(Filter.ToLower()))
+                .OrderBy(c => c.Description));
+            IsRefreshing = false;
+        }
+
         public ICommand RefreshCommand
         {
             get
             {
-                return new RelayCommand(Refresh);
+                return new RelayCommand( Refresh);
             }
         }
 
-        public  void Refresh()
+        public async void  Refresh()
         {
-            LoadCategories();
+            try
+            {
+                LoadCategories();
+            }
+            catch (System.Exception ex)
+            { 
+              await  dialogService.ShowMessage("Error",ex.Message );
+            }
+          
         }
         #endregion
 
@@ -101,34 +154,49 @@
         private async void LoadCategories()
         {
             IsRefreshing = true;
-
-            Categories.Clear();
+            try
+            {
+                Categories.Clear();
                 var mainViewModel = MainViewModel.GetInstance();
 
-            if (mainViewModel.Token==null)
-            {
-                await dialogService.ShowMessage("Error","Do not Ascces Token...");
-                return;
+                if (mainViewModel.Token == null)
+                {
+                    await dialogService.ShowMessage("Error", "Do not Ascces Token...");
+                    return  ;
+                }
+
+                var response = await apiService.GetList<Category>(
+                    "http://192.168.0.100",
+                    "/ProductsApi/Api",
+                   "/Categories",
+                    mainViewModel.Token.TokenType,
+                    mainViewModel.Token.AccessToken);
+
+                if (!response.IsSuccess)
+                {
+                    await dialogService.ShowMessage(
+                       "Error",
+                       response.Message);
+                    return  ;
+                }
+
+                var categoriesResult = (List<Category>)response.Result;
+                this.categories = new ObservableCollection<Category>(categoriesResult.OrderBy(c => c.Description));
+                Categories = this.categories;
+                IsRefreshing = false;
+                return ;
             }
-
-            var response = await apiService.GetList<Category>(
-                "http://192.168.0.100",
-                "/ProductsApi/Api",
-               "/Categories",
-                mainViewModel.Token.TokenType,
-                mainViewModel.Token.AccessToken);
-
-            if (!response.IsSuccess)
+            catch (System.Exception ex)
             {
-                await dialogService.ShowMessage(
-                   "Error",
-                   response.Message);
-                return;
-            }
 
-            var categories = (List<Category>)response.Result;
-            Categories = new ObservableCollection<Category>(categories.OrderBy(c=>c.Description));
-            IsRefreshing = false;
+                if (dialogService==null )
+                {
+                    dialogService = new DialogService();
+                };
+                await  dialogService.ShowMessage("Error",ex.Message);
+                return ;
+            }
+            
         }
 
         public void  AddCategory(Category category)

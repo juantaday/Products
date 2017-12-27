@@ -25,7 +25,6 @@ namespace Products.API.Helpers
 
                 //http://192.168.0.100/ProductsApi/Content/Images/Products/
                 FileIOPermission f = new FileIOPermission(PermissionState.None);
-                FileOptions O = new FileOptions();
              
                 f.AddPathList(FileIOPermissionAccess.AllAccess, phat);
 

@@ -97,7 +97,7 @@
 
                 if (Description == this.category.Description)
                 {
-                   await  navigationService.Back();
+                   await  navigationService.BackOnMaster();
                    return;
                 }
 
@@ -128,7 +128,7 @@
 
                 IsRunning = false;
                 IsEnabled = true;
-                await navigationService.Back();
+                await navigationService.BackOnMaster();
                 MainViewModel.GetInstance().Categories.UpdateCategory(category);
 
             }

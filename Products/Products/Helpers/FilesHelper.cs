@@ -8,7 +8,7 @@
             using (MemoryStream ms = new MemoryStream ())
             {
                 imput.CopyTo(ms);
-                return ms.ToArray ();]
+                return ms.ToArray ();
                 // 49
             }
         }

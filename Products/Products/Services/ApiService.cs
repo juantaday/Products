@@ -9,36 +9,37 @@
     using Newtonsoft.Json;
     using Plugin.Connectivity;
     using Models;
+
     public class ApiService
     {
-        //public async Task<TokenResponse> LoginFacebook(
-        //    string urlBase,
-        //    string servicePrefix,
-        //    string controller,
-        //    FacebookResponse profile)
-        //{
-        //    try
-        //    {
-        //        var request = JsonConvert.SerializeObject(profile);
-        //        var content = new StringContent(request, Encoding.UTF8, "application/json");
-        //        var client = new HttpClient();
-        //        client.BaseAddress = new Uri(urlBase);
-        //        var url = string.Format("{0}{1}", servicePrefix, controller);
-        //        var response = await client.PostAsync(url, content);
+        public async Task<TokenResponse> LoginFacebook(
+            string urlBase,
+            string servicePrefix,
+            string controller,
+            FacebookResponse profile)
+        {
+            try
+            {
+                var request = JsonConvert.SerializeObject(profile);
+                var content = new StringContent(request, Encoding.UTF8, "application/json");
+                var client = new HttpClient();
+                client.BaseAddress = new Uri(urlBase);
+                var url = string.Format("{0}{1}", servicePrefix, controller);
+                var response = await client.PostAsync(url, content);
 
-        //        if (!response.IsSuccessStatusCode)
-        //        {
-        //            return null;
-        //        }
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
 
-        //        var tokenResponse = await GetToken(urlBase, profile.Id, profile.Id);
-        //        return tokenResponse;
-        //    }
-        //    catch
-        //    {
-        //        return null;
-        //    }
-        //}
+                var tokenResponse = await GetToken("http://192.168.0.100/ProductsApi/", profile.Id, profile.Id);
+                return tokenResponse;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         public async Task<Response> CheckConnection()
         {
@@ -68,9 +69,11 @@
             };
         }
 
-        public async Task<TokenResponse> GetToken(string urlBase,
-                                                  string username,
-                                                  string password)
+
+        public async Task<TokenResponse> GetToken(
+            string urlBase,
+            string username,
+            string password)
         {
             try
             {
@@ -81,26 +84,19 @@
                     "grant_type=password&username={0}&password={1}",
                     username, password),
                     Encoding.UTF8, "application/x-www-form-urlencoded"));
-                var result = await response.Content.ReadAsStringAsync();
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    var resonseError = new TokenResponse();
-                    resonseError.ErrorDescription = result;
-                    return resonseError;
-                }
-
-
-
-               return JsonConvert.DeserializeObject<TokenResponse>(result);
-     
+                var resultJSON = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<TokenResponse>(
+                    resultJSON);
+                return result;
             }
-            catch
+            catch (Exception ex)
             {
-                return null;
+                return new TokenResponse
+                 {
+                    ErrorDescription = ex.Message 
+                };
             }
         }
-
         //public async Task<Response> GetEmployeeByEmailOrCode(
         //    string urlBase,
         //    string servicePrefix,
@@ -329,17 +325,18 @@
                 client.BaseAddress = new Uri(urlBase);
                 var url = string.Format("{0}{1}", servicePrefix, controller);
                 var response = await client.PostAsync(url, content);
+                var result = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
                 {
                     return new Response
                     {
-                        IsSuccess = false,
-                        Message = response.StatusCode.ToString(),
+                        Message = result.ToString(),
+                        IsSuccess = false
                     };
                 }
 
-                var result = await response.Content.ReadAsStringAsync();
+               
                 var newRecord = JsonConvert.DeserializeObject<T>(result);
 
                 return new Response

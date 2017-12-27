@@ -3,6 +3,6 @@
     using Domain;
     public class DataContextLocal :DataContext
     {
-
+        
     }
 }

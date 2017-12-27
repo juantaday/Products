@@ -1,6 +1,7 @@
 ﻿namespace Products.API.Controllers
 {
     using Products.Domain;
+    using Products.Domain.Models;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     using System.Linq;

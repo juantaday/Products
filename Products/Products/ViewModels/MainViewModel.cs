@@ -3,7 +3,9 @@
     using GalaSoft.MvvmLight.Command;
     using Models;
     using Products.Services;
+    using System.Collections.ObjectModel;
     using System.Windows.Input;
+    using System;
 
     public class MainViewModel
     {
@@ -22,8 +24,13 @@
 
         public EditAndNewPorductViewModel EditAndNewPorduct { get; set; }
 
-        // 31 7.37
+        public NewCustomerViewModel NewCustomer { get; set; }
+
         public TokenResponse Token { get; set; }
+
+        public ObservableCollection<Menu> MyMenu { get; set; }
+
+        public UbicationsViewModel Ubications { get; set; }
 
         #endregion
 
@@ -38,6 +45,37 @@
             }
 
             navigationService = new NavigationService();
+            LoadMenu();
+        }
+
+
+        #endregion
+
+        #region Methods
+        private void LoadMenu()
+        {
+            MyMenu = new ObservableCollection<Menu>();
+            MyMenu.Add(new Menu
+            {
+                Icon = "ic_settings",
+                PageName = "MyProfileView",
+                Title = "My Profile",
+            });
+
+            MyMenu.Add(new Menu
+            {
+                Icon = "ic_map",
+                PageName = "UbicationsView",
+                Title = "Ubications",
+            });
+
+            MyMenu.Add(new Menu
+            {
+                Icon = "ic_exit_to_app",
+                PageName = "LoginView",
+                Title = "Close sesion",
+            });
+
         }
         #endregion
 
@@ -86,14 +124,14 @@
                nameCantegory.ProductsView.CategoryName,
                Operatio.INSERT);
 
-            await navigationService.Navigate("EditAndNewPorductView");
+            await navigationService.NavigateOnMaster("EditAndNewPorductView");
         }
 
         private async  void NewCategoryCmd()
         {
             NewCategory = new NewCategoryViewModel();
             
-           await navigationService.Navigate("NewCategoryView");
+           await navigationService.NavigateOnMaster("NewCategoryView");
         }
 
         #endregion

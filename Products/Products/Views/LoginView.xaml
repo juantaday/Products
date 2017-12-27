@@ -4,78 +4,84 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="Products.Views.LoginView"
     BindingContext="{Binding Main,Source={StaticResource Locator}}}"
+    BackgroundColor="{StaticResource BackgroundColor}"
     Title="Login">
     
     <ContentPage.Content>
-        <StackLayout
+        <ScrollView>
+            <StackLayout
             BackgroundColor="LightCoral" 
             BindingContext="{Binding Login} "
             Padding="8"
             Spacing="5">
-            <Label
+                <Label
                 TextColor="Black" 
                 FontAttributes="Bold"
                 FontSize="Large"
                 HorizontalOptions="Center"
                 Text="Products"></Label>
-            <Grid Margin="50,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
-                <Label
+                <Grid Margin="10,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition  Height="60"/>
+                        <RowDefinition  Height="60"/>
+                    </Grid.RowDefinitions>
+                    <Label
                     TextColor="Black" 
                     Grid.Column="0"
                     Grid.Row="0"
                     Text="Email:">
-                </Label>
-                <Entry
+                    </Label>
+                    <Entry
                       TextColor="Black" 
                     Grid.Column="1"
                     Grid.Row="0"
                     Keyboard="Email"
                     Placeholder="Enter your email..."
                     Text="{Binding Email,Mode=TwoWay}">
-                </Entry>
-                <Label
+                    </Entry>
+                    <Label
                     TextColor="Black" 
                     Grid.Column="0"
                     Grid.Row="1"
                     Text="Password:">
-                </Label>
-                <Entry
+                    </Label>
+                    <Entry
                     TextColor="Black" 
                     Grid.Column="1"
                     Grid.Row="1"
                     IsPassword ="True"
                     Placeholder="Enter your password..."
                     Text="{Binding Password,Mode=TwoWay}">
-                </Entry>
-            </Grid>
-            <StackLayout Margin="50,0"
+                    </Entry>
+                </Grid>
+                <StackLayout Margin="50,0"
                 Orientation ="Horizontal">
-                <Label
+                    <Label
                     Text="Rememberme"
                     VerticalOptions="Center" >
-                </Label>
-                <Switch
-                    IsToggled="{Binding IsToggled, Mode=TwoWay}"
+                    </Label>
+                    <Switch
+                         IsToggled="{Binding IsToggled, Mode=TwoWay}"
                     ></Switch>
-            </StackLayout>
-            <Label Margin="50,0"
+                </StackLayout>
+                <Label Margin="50,0"
                 Text="Forgot your password?"
                 TextColor="Blue">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding RecoverPassworCommad, Mode=TwoWay}"/>
-                </Label.GestureRecognizers>
-            </Label>
-            <ActivityIndicator
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding RecoverPassworCommad, Mode=TwoWay}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <ActivityIndicator
                 Color="White"
                 IsRunning="{Binding IsRunning, Mode=TwoWay}"
                 >
-            </ActivityIndicator>
-            <StackLayout Margin="50,0">
-                <Button
+                </ActivityIndicator>
+                <StackLayout Margin="50,0">
+                    <Button
                 Command="{Binding  LoginCommand}"
                 IsEnabled="{Binding IsEnabled, Mode=TwoWay}"
                 BackgroundColor="DodgerBlue"
@@ -84,9 +90,9 @@
                 BorderRadius="23"
                 HeightRequest="45"
                 >
-                </Button>
-                <Button
-                Command="{Binding  RegisterNewUserLoginCommand}"
+                    </Button>
+                    <Button
+                Command="{Binding  RegisterNewUserCommand}"
                 IsEnabled="{Binding IsEnabled, Mode=TwoWay}"
                 BackgroundColor="Purple"
                 Text="Regidster New User.."
@@ -94,9 +100,9 @@
                 BorderRadius="23"
                 HeightRequest="45"
                   >
-                </Button>
-                <Button
-                Command="{Binding  RegisterNewUserLoginCommand}"
+                    </Button>
+                    <Button
+                Command="{Binding  LoginWithFacebookCommand}"
                 IsEnabled="{Binding IsEnabled, Mode=TwoWay}"
                 BackgroundColor="Blue"
                 Text="Login With Faceboock."
@@ -104,9 +110,11 @@
                 BorderRadius="23"
                 HeightRequest="45"
                 >
-                </Button>
+                    </Button>
+                </StackLayout>
+
             </StackLayout>
-           
-        </StackLayout>
+
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

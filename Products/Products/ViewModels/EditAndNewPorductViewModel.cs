@@ -237,7 +237,7 @@ namespace Products.ViewModels
                     }
                     IsRunning = false;
                     IsEnabled = true;
-                    await navigationService.Back();
+                    await navigationService.BackOnMaster();
                 }
                 else if (this.Operation == Operatio.INSERT)
                 {
@@ -262,7 +262,7 @@ namespace Products.ViewModels
                     }
                     IsRunning = false;
                     IsEnabled = true;
-                    await navigationService.Back();
+                    await navigationService.BackOnMaster();
                 }
             }
             catch (System.Exception ex)
